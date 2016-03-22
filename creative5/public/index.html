@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app='app'>
+<head>
+	<title>Dodge</title>
+	<script type="text/javascript" src='lib/angular/angular.min.js'></script>
+	<script type="text/javascript" src='/socket.io/socket.io.js'></script>
+	<script type="text/javascript" src='javascripts/app.js'></script>
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+	<link href='stylesheets/style.css' rel='stylesheet' type='text/css'>
+</head>
+<body ng-controller='gameCtrl' ng-keydown='keydown($event)' ng-keyup='keyup($event)'>
+	<h1  style='background: {{ playerColor }}'>Dodge</h1>
+	<h2 id='game-info2'>Start by picking your favorite color!</h2>
+	<!-- <label>Color</label> -->
+	<center><input class='color-picker' type='color' ng-model='playerColor'></center>
+	<center<h2> click above </h2> </center>
+	<h2 id='game-info' style='width: {{ gameArea.canvas.width }}px'>
+		<span class='info' ng-if='!showingScores'>Lives: {{ lives }}</span>
+		<span class='info' ng-if='!showingScores'>Level: {{ level }}</span>
+		<span class='info' ng-if='!showingScores'>Score: {{ score }}</span>
+		<span class='info' ng-if='showingScores'>High Scores</span>
+		<span class='info' ng-if='showingScores'><button class='back-button' ng-click='hideScores()'>Back</button></span>
+	</h2>
+	<div ng-hide='showingScores' id='viewport'>
+		<canvas id='canvas' width='720' height='300'></canvas>
+		<div id='button-container'>
+			<input class='player-initials' type='text' ng-show='submitting' maxlength='3' ng-init='playerName = "AAA"' ng-model='playerName'>
+			<button class='button' ng-show='submitting' ng-click='submitScore()' style='background: {{ playerColor }}'>Submit Score</button>
+			<button class='button' ng-hide='playing' ng-click='startGame()' style='background: {{ playerColor }}'>{{ buttonText }}</button>
+			<button class='button' ng-hide='playing' ng-click='showScores()' style='background: {{ playerColor }}'>High Scores</button>
+		</div>
+	</div>
+	<table ng-show='showingScores'>
+		<tr style='background: {{ playerColor }}'>
+			<th>#</th>
+			<th>Name</th>
+			<th>Score</th>
+			<th>Color</th>
+		</tr>
+		<tr ng-repeat='score in highScores | orderBy: "-score" | limitTo: 10'>
+			<td>{{ $index + 1 }}</td>
+			<td>{{ score.name }}</td>
+			<td>{{ score.score }}</td>
+			<td style='background: {{ score.color }}'></td>
+		</tr>
+	</table>
+	<!-- <label>Volume</label> -->
+	<h2 id='game-info3'> Use the <button class="myButton" style='background: {{ playerColor }}'>Up</button> <button class="myButton" style='background: {{ playerColor }}'>Left</button> <button class="myButton" style='background: {{ playerColor }}'>Down</button> <button class="myButton" style='background: {{ playerColor }}'>Right</button> keys to move the ball</h2>
+	<h2 id='game-info3'> Use <button class="myButton" style='background: {{ playerColor }}'>space</button> to jump</h2>
+	<input class='volume-slider' type='range' ng-model='volume' max='1' min='0' step='.01' ng-change='changeVolume()'><br>
+	<h2 id='game-info3'>Sound Adjustment</h2>
+
+</body>
